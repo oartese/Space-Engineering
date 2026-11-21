@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Engineering Beyond Earth</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap">
+<style>
+/* Layout: one left-aligned reading column with a narrow label rail (years + category) beside each chapter; hairline dividers; a single orbit drawing in the hero carries the space theme. */
+:root {
+  --bg: #FBFCFE;
+  --surface: #EEF3FA;
+  --fg: #0A1A3A;
+  --muted: #4B5B79;
+  --line: #D6DFEE;
+  --blue: #0B3D91;
+  --red: #C8281F;
+  --moon: #C3CDE0;
+  --star: #9FB0CF;
+  --font-display: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #050D20;
+    --surface: #0B1631;
+    --fg: #E7EDFA;
+    --muted: #9AA8C6;
+    --line: #1B2A4C;
+    --blue: #7DAAFF;
+    --red: #FF6F61;
+    --moon: #8F9CBB;
+    --star: #3A4B73;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #050D20;
+  --surface: #0B1631;
+  --fg: #E7EDFA;
+  --muted: #9AA8C6;
+  --line: #1B2A4C;
+  --blue: #7DAAFF;
+  --red: #FF6F61;
+  --moon: #8F9CBB;
+  --star: #3A4B73;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+.wrap {
+  max-width: 70rem;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--blue); text-underline-offset: 3px; }
+a:hover { color: var(--red); }
+a:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.12; letter-spacing: -0.015em; }
+p { margin: 0 0 1.1rem; max-width: 65ch; }
+.mono { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* top bar */
+.top { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem 1.5rem; flex-wrap: wrap; padding-block: 1.1rem; border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 0.6rem; color: var(--fg); }
+.brand i { width: 9px; height: 9px; border-radius: 50%; background: var(--red); display: block; }
+.top nav { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+.top nav a { color: var(--muted); text-decoration: none; }
+.top nav a:hover { color: var(--blue); }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 2.5rem 3rem; align-items: center; padding-block: 3.5rem 4rem; }
+.hero .eyebrow { color: var(--red); margin-bottom: 1.1rem; }
+.hero h1 { font-size: clamp(2.4rem, 6.4vw, 4.4rem); margin-bottom: 1.2rem; }
+.hero .sub { font-size: 1.2rem; color: var(--muted); max-width: 34rem; }
+.notice { border: 1px solid var(--line); background: var(--surface); border-radius: 2px; padding: 1rem 1.2rem; margin-top: 1.75rem; max-width: 34rem; }
+.notice .mono { color: var(--red); display: block; margin-bottom: 0.35rem; }
+.notice p { margin: 0; font-size: 0.97rem; }
+.orbit { width: 100%; height: auto; display: block; }
+.orbit .lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; fill: var(--muted); text-transform: uppercase; }
+.orbit .path { fill: none; stroke: var(--red); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 7; }
+.orbit .guide { fill: none; stroke: var(--line); stroke-width: 1; }
+.figcap { color: var(--muted); font-size: 0.85rem; margin: 0.5rem 0 0; }
+
+/* chapters */
+.chapter { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 1.5rem 3rem; padding-block: 4rem; border-top: 1px solid var(--line); }
+.rail { min-width: 0; }
+.rail .years { color: var(--red); display: block; }
+.rail .cat { color: var(--muted); display: block; margin-top: 0.35rem; }
+.body { min-width: 0; }
+.body h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); margin-bottom: 1.2rem; }
+.body h3 { font-size: 1.15rem; margin: 2rem 0 0.6rem; }
+.lead { font-size: 1.2rem; color: var(--muted); }
+.ph { background: var(--surface); border-bottom: 1px dashed var(--red); padding: 0 0.25em; border-radius: 2px; }
+
+/* facts */
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0 2rem; margin: 2rem 0; }
+.facts > div { border-top: 1px solid var(--line); padding: 0.9rem 0 1.1rem; min-width: 0; }
+.facts dt { color: var(--muted); margin-bottom: 0.3rem; }
+.facts dd { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; line-height: 1.25; }
+
+/* contents list */
+.toc { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.toc li { border-bottom: 1px solid var(--line); }
+.toc a { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 0.25rem 1.5rem; padding: 1.1rem 0; text-decoration: none; color: var(--fg); }
+.toc a:hover .t { color: var(--blue); }
+.toc .y { color: var(--red); padding-top: 0.25rem; }
+.toc .t { font-family: var(--font-display); font-weight: 500; font-size: 1.3rem; line-height: 1.25; }
+.toc .d { color: var(--muted); font-size: 0.97rem; display: block; }
+
+/* table */
+.scroll { overflow-x: auto; margin: 1.75rem 0; }
+table { border-collapse: collapse; width: 100%; min-width: 36rem; font-size: 0.98rem; }
+caption { text-align: left; color: var(--muted); font-size: 0.85rem; padding-bottom: 0.6rem; }
+th, td { text-align: left; padding: 0.75rem 1rem 0.75rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-weight: 500; font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border-bottom-color: var(--fg); }
+td:first-child { font-weight: 600; }
+td { font-variant-numeric: tabular-nums; }
+
+/* bars */
+.bars { display: grid; gap: 1.3rem; margin: 1.75rem 0 2rem; }
+.bar-head { display: flex; justify-content: space-between; gap: 0.25rem 1rem; flex-wrap: wrap; align-items: baseline; }
+.bar-head strong { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; }
+.bar-head span { font-variant-numeric: tabular-nums; font-weight: 500; }
+.bar-sub { color: var(--muted); display: block; margin-top: 0.1rem; }
+.track { height: 0.65rem; background: var(--surface); margin-top: 0.5rem; }
+.fill { height: 100%; background: var(--blue); min-width: 4px; }
+.back { margin-top: 2rem; font-size: 0.95rem; }
+
+ul.plain { padding-left: 1.2rem; max-width: 65ch; margin: 0 0 1.1rem; }
+ul.plain li { margin-bottom: 0.5rem; }
+
+footer { border-top: 1px solid var(--line); padding-block: 2.5rem 3rem; color: var(--muted); font-size: 0.92rem; }
+footer p { margin-bottom: 0.5rem; }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: minmax(0, 1fr); padding-block: 2.5rem 3rem; }
+}
+@media (max-width: 760px) {
+  .chapter { grid-template-columns: minmax(0, 1fr); padding-block: 3rem; gap: 1rem; }
+  .rail { display: flex; gap: 0.75rem 1.25rem; flex-wrap: wrap; align-items: baseline; }
+  .rail .cat { margin-top: 0; }
+  .toc a { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+  .orbit .path { animation: drift 5s linear infinite; }
+  @keyframes drift { to { stroke-dashoffset: -16; } }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand mono" href="#top" style="text-decoration:none"><i></i>Engineering Beyond Earth</a>
+    <nav class="mono" aria-label="Main">
+      <a href="#about">About</a>
+      <a href="#contents">Contents</a>
+      <a href="#sources">Sources</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <p class="eyebrow mono">Educational project</p>
+        <h1>Engineering Beyond Earth</h1>
+        <p class="sub">How NASA engineers built the rockets, spacecraft and rovers that reached the Moon and Mars.</p>
+        <div class="notice">
+          <span class="mono">Disclaimer</span>
+          <p>This website is an independent educational project. It has no connection to NASA and is not endorsed or sponsored by the agency.</p>
+        </div>
+      </div>
+      <figure style="margin:0">
+        <svg class="orbit" viewBox="0 0 520 300" role="img" aria-label="Simplified drawing of a spacecraft trajectory from Earth around the Moon and back">
+          <circle cx="40" cy="40" r="1.5" fill="var(--star)"/><circle cx="210" cy="24" r="1.5" fill="var(--star)"/>
+          <circle cx="300" cy="270" r="1.5" fill="var(--star)"/><circle cx="480" cy="60" r="1.5" fill="var(--star)"/>
+          <circle cx="470" cy="250" r="1.5" fill="var(--star)"/><circle cx="60" cy="260" r="1.5" fill="var(--star)"/>
+          <circle cx="120" cy="150" r="48" class="guide"/>
+          <circle cx="120" cy="150" r="34" fill="var(--blue)"/>
+          <circle cx="400" cy="150" r="12" fill="var(--moon)"/>
+          <path class="path" d="M152 138 C 230 56 340 64 400 124 A 26 26 0 0 1 400 176 C 340 236 230 244 152 162"/>
+          <text class="lbl" x="120" y="222" text-anchor="middle">Earth</text>
+          <text class="lbl" x="400" y="214" text-anchor="middle">Moon</text>
+        </svg>
+        <figcaption class="figcap">Simplified free-return trajectory around the Moon. Not to scale.</figcaption>
+      </figure>
+    </section>
+
+    <section class="chapter" id="about">
+      <div class="rail">
+        <span class="years mono">About me</span>
+        <span class="cat mono">Author</span>
+      </div>
+      <div class="body">
+        <h2>Hi, I'm <span class="ph">[Your name]</span></h2>
+        <p class="lead">I'm a <span class="ph">[year]</span> student in <span class="ph">[your major]</span> at <span class="ph">[your university]</span>. I built this site for <span class="ph">[course name]</span>, and I'm also using it as the start of my engineering portfolio.</p>
+        <p>I chose NASA engineering because <span class="ph">[one or two sentences on why space engineering interests you]</span>. My main interests are <span class="ph">[for example propulsion, structures, robotics or systems engineering]</span>.</p>
+        <p>This project covers four areas: the Apollo Moon landings, the launch vehicles that made them possible, the Artemis return to the Moon, and the rovers that explore Mars. Each section names the key hardware, the main engineering problem and why it matters.</p>
+        <dl class="facts">
+          <div><dt class="mono">Email</dt><dd><span class="ph">[your email]</span></dd></div>
+          <div><dt class="mono">LinkedIn</dt><dd><span class="ph">[your profile]</span></dd></div>
+          <div><dt class="mono">GitHub</dt><dd><span class="ph">[your profile]</span></dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="chapter" id="contents">
+      <div class="rail">
+        <span class="years mono">Contents</span>
+        <span class="cat mono">Index</span>
+      </div>
+      <div class="body">
+        <h2>What's inside</h2>
+        <ul class="toc">
+          <li><a href="#apollo"><span class="y mono">1961–1972</span><span><span class="t">Apollo and the first Moon landings</span><span class="d">Systems engineering, lunar orbit rendezvous and Apollo 13.</span></span></a></li>
+          <li><a href="#rockets"><span class="y mono">1967–today</span><span><span class="t">Launch vehicles</span><span class="d">Saturn V, the Space Shuttle and SLS compared.</span></span></a></li>
+          <li><a href="#artemis"><span class="y mono">2022–today</span><span><span class="t">Artemis</span><span class="d">The return to the Moon, the Orion heat shield and Artemis II.</span></span></a></li>
+          <li><a href="#rovers"><span class="y mono">1971–today</span><span><span class="t">Rovers on the Moon and Mars</span><span class="d">From Sojourner to Perseverance, the sky crane and Ingenuity.</span></span></a></li>
+          <li><a href="#sources"><span class="y mono">Reference</span><span><span class="t">Sources</span><span class="d">Where to check every figure on this site.</span></span></a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="chapter" id="apollo">
+      <div class="rail">
+        <span class="years mono">1961–1972</span>
+        <span class="cat mono">Lunar missions</span>
+      </div>
+      <div class="body">
+        <h2>Apollo and the first Moon landings</h2>
+        <p class="lead">In 1961 President Kennedy set the goal of landing a person on the Moon. Eleven years later NASA had completed six crewed landings, and the program is still studied as a model of large-scale systems engineering.</p>
+        <dl class="facts">
+          <div><dt class="mono">First landing</dt><dd>Apollo 11, July 20, 1969</dd></div>
+          <div><dt class="mono">Crewed landings</dt><dd>6, from 1969 to 1972</dd></div>
+          <div><dt class="mono">People on the Moon</dt><dd>12</dd></div>
+          <div><dt class="mono">Mission design</dt><dd>Lunar orbit rendezvous</dd></div>
+        </dl>
+        <h3>The engineering problem</h3>
+        <p>Early plans called for one large vehicle that flew to the Moon, landed and flew home. NASA chose lunar orbit rendezvous instead. A Command and Service Module stayed in lunar orbit while a small two-stage Lunar Module carried two astronauts to the surface and back. Landing less mass on the Moon meant the Saturn V could be a size that was actually buildable.</p>
+        <p>Navigation depended on the Apollo Guidance Computer, one of the first computers built with integrated circuits. It handled guidance for the trip to the Moon and for the landing itself.</p>
+        <h3>Apollo 13</h3>
+        <p>In April 1970 an oxygen tank failed in the Apollo 13 Service Module. The crew used the Lunar Module as a lifeboat and returned safely to Earth. The mission shows why engineers design spacecraft with backups and why teams on the ground rehearse failures.</p>
+        <p class="back"><a href="#contents">Back to contents</a></p>
+      </div>
+    </section>
+
+    <section class="chapter" id="rockets">
+      <div class="rail">
+        <span class="years mono">1967–today</span>
+        <span class="cat mono">Rockets</span>
+      </div>
+      <div class="body">
+        <h2>Launch vehicles</h2>
+        <p class="lead">Every mission starts with a rocket. NASA's three largest crewed launch systems all solve the same problem, lifting heavy payloads out of Earth's gravity, in different ways.</p>
+        <div class="scroll">
+          <table>
+            <caption>Three NASA launch vehicles compared. Heights and thrust are approximate.</caption>
+            <thead><tr><th>Vehicle</th><th>Years flown</th><th>Height</th><th>Liftoff thrust</th><th>Reuse</th></tr></thead>
+            <tbody>
+              <tr><td>Saturn V</td><td>1967–1973</td><td>363 ft (111 m)</td><td>7.6 million lbf</td><td>None</td></tr>
+              <tr><td>Space Shuttle</td><td>1981–2011</td><td>184 ft (56 m)</td><td>about 6.8 million lbf</td><td>Orbiter and boosters</td></tr>
+              <tr><td>SLS Block 1</td><td>2022–today</td><td>322 ft (98 m)</td><td>8.8 million lbf</td><td>None</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Saturn V</h3>
+        <p>Saturn V had three stages. The first stage burned kerosene and liquid oxygen in five F-1 engines, and each stage was dropped once its propellant ran out. It flew 13 times between 1967 and 1973 and launched every crewed lunar mission.</p>
+        <h3>Space Shuttle</h3>
+        <p>The Shuttle flew 135 missions. Its orbiter and two solid rocket boosters were reused, while the large external tank was not. Two accidents, Challenger in 1986 and Columbia in 2003, cost 14 lives and led to major changes in safety reviews and engineering oversight.</p>
+        <h3>Space Launch System</h3>
+        <p>SLS reuses Shuttle-era hardware, including RS-25 engines and a booster design based on the Shuttle's, inside a new expendable rocket. Comparing the three shows a recurring trade-off: reuse can lower the hardware cost per flight in principle, but it adds weight, complexity and refurbishment work.</p>
+        <p class="back"><a href="#contents">Back to contents</a></p>
+      </div>
+    </section>
+
+    <section class="chapter" id="artemis">
+      <div class="rail">
+        <span class="years mono">2022–today</span>
+        <span class="cat mono">Lunar missions</span>
+      </div>
+      <div class="body">
+        <h2>Artemis</h2>
+        <p class="lead">Artemis is NASA's program to return people to the Moon and prepare for longer stays. Its first two flights tested the rocket and spacecraft that later missions depend on.</p>
+        <dl class="facts">
+          <div><dt class="mono">Artemis I</dt><dd>November 2022, uncrewed, about 25 days</dd></div>
+          <div><dt class="mono">Artemis II</dt><dd>April 2026, crewed, about 10 days</dd></div>
+          <div><dt class="mono">SLS Block 1</dt><dd>322 ft, 8.8 million lbf</dd></div>
+          <div><dt class="mono">Orion service module</dt><dd>Provided by ESA</dd></div>
+        </dl>
+        <h3>The heat shield</h3>
+        <p>Returning from the Moon, the Orion capsule hits the atmosphere at about 25,000 mph (11 km/s), faster than a spacecraft coming home from low Earth orbit. Artemis I tested the heat shield in flight. Inspections afterward found it lost more material than predicted, and NASA investigated this before putting a crew on board.</p>
+        <h3>Artemis II</h3>
+        <p>Artemis II carried four astronauts: Reid Wiseman, Victor Glover, Christina Koch and Jeremy Hansen of the Canadian Space Agency. The crew flew around the Moon without landing and splashed down in the Pacific Ocean off San Diego, which tested Orion's life support, navigation and recovery with people aboard.</p>
+        <h3>What comes next</h3>
+        <p>Later missions aim to land astronauts near the lunar south pole using commercial landers, with SpaceX and Blue Origin developing the Human Landing Systems. Schedules have changed several times, so check NASA's Artemis pages for the current plan.</p>
+        <p class="back"><a href="#contents">Back to contents</a></p>
+      </div>
+    </section>
+
+    <section class="chapter" id="rovers">
+      <div class="rail">
+        <span class="years mono">1971–today</span>
+        <span class="cat mono">Rovers</span>
+      </div>
+      <div class="body">
+        <h2>Rovers on the Moon and Mars</h2>
+        <p class="lead">A rover reaches places a lander cannot. NASA's Mars rovers have grown from a robot the size of a microwave oven to a car-sized laboratory.</p>
+        <div class="bars" aria-label="Mass of NASA Mars rovers">
+          <div>
+            <div class="bar-head"><strong>Sojourner</strong><span>10.6 kg</span></div>
+            <span class="bar-sub mono">1997 · airbags · solar</span>
+            <div class="track"><div class="fill" style="width:1%"></div></div>
+          </div>
+          <div>
+            <div class="bar-head"><strong>Spirit and Opportunity</strong><span>about 185 kg each</span></div>
+            <span class="bar-sub mono">2004 · airbags · solar</span>
+            <div class="track"><div class="fill" style="width:18%"></div></div>
+          </div>
+          <div>
+            <div class="bar-head"><strong>Curiosity</strong><span>about 899 kg</span></div>
+            <span class="bar-sub mono">2012 · sky crane · nuclear power</span>
+            <div class="track"><div class="fill" style="width:87.7%"></div></div>
+          </div>
+          <div>
+            <div class="bar-head"><strong>Perseverance</strong><span>about 1,025 kg</span></div>
+            <span class="bar-sub mono">2021 · sky crane · nuclear power</span>
+            <div class="track"><div class="fill" style="width:100%"></div></div>
+          </div>
+        </div>
+        <h3>The sky crane</h3>
+        <p>Curiosity was too heavy for airbags. Engineers lowered it to the surface on cables from a hovering rocket-powered descent stage, then flew the stage away after touchdown. Perseverance used the same method and added terrain-relative navigation, which compares camera images with onboard maps during descent to steer away from hazards.</p>
+        <h3>Power</h3>
+        <p>Curiosity and Perseverance run on a radioisotope power system that turns heat from decaying plutonium-238 into electricity. Unlike solar panels, it keeps working at night, in winter and through dust storms. Opportunity, built to last 90 Martian days, ran on solar power for more than 14 years before a global dust storm ended contact in 2018.</p>
+        <h3>Beyond driving</h3>
+        <p>Perseverance seals rock samples in tubes for a possible return to Earth, and how and when that happens is still being decided. It also carried the MOXIE experiment, which made oxygen from the carbon dioxide in the Martian air. Ingenuity, a 1.8 kg helicopter that traveled with Perseverance, made the first powered, controlled flight on another planet on April 19, 2021, and flew 72 times before its mission ended in January 2024.</p>
+        <h3>On the Moon</h3>
+        <p>The battery-powered Lunar Roving Vehicle flew on Apollo 15, 16 and 17. It folded up to fit inside the Lunar Module and gave astronauts a much longer reach than walking.</p>
+        <p class="back"><a href="#contents">Back to contents</a></p>
+      </div>
+    </section>
+
+    <section class="chapter" id="sources">
+      <div class="rail">
+        <span class="years mono">Reference</span>
+        <span class="cat mono">Sources</span>
+      </div>
+      <div class="body">
+        <h2>Sources</h2>
+        <p>Check every figure on this site against these sources before using it in coursework, and add citations in the format your course requires.</p>
+        <ul class="plain">
+          <li><a href="https://www.nasa.gov" rel="noopener">NASA</a>, the agency's main site.</li>
+          <li><a href="https://www.nasa.gov/humans-in-space/artemis/" rel="noopener">NASA Artemis</a>, mission pages for Artemis I, II and later flights.</li>
+          <li><a href="https://science.nasa.gov/mars/" rel="noopener">NASA Mars Exploration</a>, rover and helicopter mission pages.</li>
+          <li><a href="https://history.nasa.gov" rel="noopener">NASA History</a>, Apollo, Saturn V and Space Shuttle records.</li>
+        </ul>
+        <p class="back"><a href="#contents">Back to contents</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>This site is an independent educational project and is not affiliated with, endorsed by or sponsored by NASA.</p>
+    <p class="mono">Draft · November 2026</p>
+  </footer>
+</div>
+</body>
+</html>
